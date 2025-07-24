@@ -1,6 +1,8 @@
 package com.quizlab.service;
 
 
+import com.quizlab.dto.UserRegisterRequest;
+import com.quizlab.dto.UserResponse;
 import com.quizlab.model.User;
 import com.quizlab.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -20,4 +22,10 @@ public class UserService {
     public Optional<User> findUserById(UUID id) {
         return userRepository.findById(id);
     }
+
+//    public UserResponse registerUser(UserRegisterRequest request) {
+//        if (userRepository.findByUsername(request.getUsername().isPresent())) {
+//            throw new RuntimeException("Username '" + request.getUsername())
+//        }
+//    }
 }
