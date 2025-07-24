@@ -48,7 +48,7 @@ public class User {
         this.createAt = LocalDateTime.now();
     }
 
-    @PrePersist
+    @PreUpdate
     protected void onUpdae() {
         this.updateAt = LocalDateTime.now();
     }
