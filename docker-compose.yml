@@ -1,0 +1,50 @@
+# D:\IdeaProjec\QuizLab\docker-compose.yml
+# Pastikan file ini HANYA berisi YAML ini.
+# Hapus baris 'version: 3.8' jika Anda mendapatkan peringatan "obsolete"
+# version: '3.8' # Ini bisa dihapus jika ada warning
+
+services:
+  # --- Service untuk Aplikasi Spring Boot QuizLab API ---
+  quizlab-app:
+    build:
+      context: . # Merujuk ke direktori saat ini (D:\IdeaProjec\QuizLab\)
+      dockerfile: Dockerfile # Merujuk ke file Dockerfile di direktori yang sama
+    container_name: quizlab-api-container
+    ports:
+      - "8090:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://quizlab-db:3306/quizlab_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: quizlab_user
+      SPRING_DATASOURCE_PASSWORD: MySuperSecurePass123!
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: 'true'
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: 'true'
+    depends_on:
+      - quizlab-db
+    networks:
+      - quizlab-network
+
+  # --- Service untuk Database MySQL ---
+  quizlab-db:
+    image: mysql:8.0
+    container_name: quizlab-mysql-container
+    ports:
+      - "3307:3306" # Jika Anda ingin akses DB dari host di 3307
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: quizlab_db
+      MYSQL_USER: quizlab_user
+      MYSQL_PASSWORD: MySuperSecurePass123!
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - quizlab-network
+
+# --- Definisi Jaringan Kustom ---
+networks:
+  quizlab-network:
+    driver: bridge
+
+# --- Definisi Volume Persisten ---
+volumes:
+  db_data:
