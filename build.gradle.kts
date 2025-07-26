@@ -4,13 +4,18 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 }
 
-group = "org.demo"
+group = "com.quizlab"
 version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
