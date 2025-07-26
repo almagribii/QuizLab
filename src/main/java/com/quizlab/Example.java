@@ -182,3 +182,128 @@
 //        }
 //    }
 //}do
+
+// src/main/java/com/quizlab/service/CategoryService.java
+package com.quizlab.service; // Pastikan ini sesuai dengan struktur paket Anda
+
+import com.quizlab.dto.CategoryRequest;  // DTO input untuk kategori
+import com.quizlab.dto.CategoryResponse; // DTO output untuk kategori
+import com.quizlab.model.Category;      // Entitas Category
+import com.quizlab.repository.CategoryRepository; // Repositori untuk Category
+import lombok.RequiredArgsConstructor;   // Lombok untuk konstruktor
+import org.springframework.stereotype.Service; // Anotasi @Service
+import org.springframework.transaction.annotation.Transactional; // Untuk manajemen transaksi
+import java.time.LocalDateTime;           // Untuk timestamp
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;       // Untuk konversi List
+
+@Service // Menandakan bahwa kelas ini adalah komponen Service Spring
+@RequiredArgsConstructor // Lombok: Membuat konstruktor untuk field final (Dependency Injection)
+@Transactional // Semua method publik di kelas ini akan berjalan dalam sebuah transaksi database
+public class CategoryService {
+
+    private final CategoryRepository categoryRepository; // Injeksi CategoryRepository
+
+    /**
+     * Membuat kategori baru.
+     * @param request DTO yang berisi nama dan deskripsi kategori.
+     * @return CategoryResponse DTO dari kategori yang berhasil dibuat.
+     * @throws RuntimeException jika nama kategori sudah ada.
+     */
+    public CategoryResponse createCategory(CategoryRequest request) {
+        // 1. Cek apakah nama kategori sudah ada
+        if (categoryRepository.findByName(request.getName()).isPresent()) {
+            throw new RuntimeException("Nama kategori '" + request.getName() + "' sudah ada.");
+        }
+
+        // 2. Buat objek Category dari DTO Request
+        Category newCategory = new Category();
+        newCategory.setName(request.getName());
+        newCategory.setDescription(request.getDescription());
+        // createdAt dan updatedAt akan diisi otomatis oleh @PrePersist/@PreUpdate di entitas
+
+        // 3. Simpan kategori ke database
+        Category savedCategory = categoryRepository.save(newCategory);
+
+        // 4. Konversi entitas Category yang disimpan ke DTO Response dan kembalikan
+        return mapToCategoryResponse(savedCategory);
+    }
+
+    /**
+     * Mengambil daftar semua kategori.
+     * @return List<CategoryResponse> daftar kategori.
+     */
+    @Transactional(readOnly = true) // Transaksi hanya untuk membaca, bisa lebih optimal
+    public List<CategoryResponse> getAllCategories() {
+        return categoryRepository.findAll().stream()
+                .map(this::mapToCategoryResponse) // Konversi setiap entitas ke DTO
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Mengambil kategori berdasarkan ID.
+     * @param id ID kategori.
+     * @return Optional<CategoryResponse> DTO kategori jika ditemukan.
+     */
+    @Transactional(readOnly = true)
+    public Optional<CategoryResponse> getCategoryById(UUID id) {
+        return categoryRepository.findById(id)
+                .map(this::mapToCategoryResponse); // Konversi ke DTO jika ada
+    }
+
+    /**
+     * Memperbarui kategori yang sudah ada.
+     * @param id ID kategori yang akan diperbarui.
+     * @param request DTO dengan data kategori yang baru.
+     * @return Optional<CategoryResponse> DTO kategori yang diperbarui jika ditemukan.
+     * @throws RuntimeException jika kategori tidak ditemukan atau nama kategori duplikat.
+     */
+    public Optional<CategoryResponse> updateCategory(UUID id, CategoryRequest request) {
+        return categoryRepository.findById(id).map(existingCategory -> {
+            // Cek duplikasi nama jika nama berubah dan sudah ada di kategori lain
+            if (!existingCategory.getName().equals(request.getName())) {
+                if (categoryRepository.findByName(request.getName()).isPresent()) {
+                    throw new RuntimeException("Nama kategori '" + request.getName() + "' sudah ada.");
+                }
+            }
+
+            existingCategory.setName(request.getName());
+            existingCategory.setDescription(request.getDescription());
+            // updatedAt akan diisi otomatis oleh @PreUpdate di entitas
+
+            Category updatedCategory = categoryRepository.save(existingCategory);
+            return mapToCategoryResponse(updatedCategory);
+        });
+        // Jika Optional kosong (kategori tidak ditemukan), map() tidak akan dijalankan dan Optional kosong akan dikembalikan
+    }
+
+    /**
+     * Menghapus kategori berdasarkan ID.
+     * @param id ID kategori yang akan dihapus.
+     * @return true jika berhasil dihapus, false jika kategori tidak ditemukan.
+     */
+    public boolean deleteCategory(UUID id) {
+        if (categoryRepository.existsById(id)) {
+            categoryRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Metode helper untuk mengkonversi entitas Category ke CategoryResponse DTO.
+     * @param category Entitas Category.
+     * @return CategoryResponse DTO.
+     */
+    private CategoryResponse mapToCategoryResponse(Category category) {
+        return CategoryResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .description(category.getDescription())
+                .createdAt(category.getCreatedAt())
+                .updatedAt(category.getUpdatedAt())
+                .build();
+    }
+}
