@@ -20,13 +20,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-
-    /**
-     * Membuat kategori baru.
-     * @param request DTO yang berisi nama dan deskripsi kategori.
-     * @return CategoryResponse DTO dari kategori yang berhasil dibuat.
-     * @throws RuntimeException jika nama kategori sudah ada.
-     */
+    
     public CategoryResponse createCategory(CategoryRequest request) {
         // 1. Cek apakah nama kategori sudah ada
         if (categoryRepository.findByName(request.getName()).isPresent()) { // <--- getName() dari Lombok
