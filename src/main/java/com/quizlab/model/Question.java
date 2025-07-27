@@ -40,7 +40,7 @@ public class Question {
     private LocalDateTime createdAt;
 
     @Column(name = "update_at")
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate(){
@@ -49,6 +49,6 @@ public class Question {
 
     @PreUpdate
     protected void onUpdate(){
-        this.updateAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }
