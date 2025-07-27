@@ -22,27 +22,19 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     
     public CategoryResponse createCategory(CategoryRequest request) {
-        // 1. Cek apakah nama kategori sudah ada
-        if (categoryRepository.findByName(request.getName()).isPresent()) { // <--- getName() dari Lombok
+        if (categoryRepository.findByName(request.getName()).isPresent()) {
             throw new RuntimeException("Nama kategori '" + request.getName() + "' sudah ada.");
         }
 
-        // 2. Buat objek Category dari DTO Request
         Category newCategory = new Category();
-        newCategory.setName(request.getName()); // <--- getName() dari Lombok
-        newCategory.setDescription(request.getDescription()); // <--- getDescription() dari Lombok
+        newCategory.setName(request.getName());
+        newCategory.setDescription(request.getDescription());
 
-        // 3. Simpan kategori ke database
         Category savedCategory = categoryRepository.save(newCategory);
 
-        // 4. Konversi entitas Category yang disimpan ke DTO Response dan kembalikan
-        return mapToCategoryResponse(savedCategory); // <--- INI ADALAH STATEMENT RETURN YANG DICARI COMPILER
+        return mapToCategoryResponse(savedCategory);
     }
 
-    /**
-     * Mengambil daftar semua kategori.
-     * @return List<CategoryResponse> daftar kategori.
-     */
     @Transactional(readOnly = true)
     public List<CategoryResponse> getAllCategories() {
         return categoryRepository.findAll().stream()
@@ -50,24 +42,12 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Mengambil kategori berdasarkan ID.
-     * @param id ID kategori.
-     * @return Optional<CategoryResponse> DTO kategori jika ditemukan.
-     */
     @Transactional(readOnly = true)
     public Optional<CategoryResponse> getCategoryById(UUID id) {
         return categoryRepository.findById(id)
                 .map(this::mapToCategoryResponse);
     }
 
-    /**
-     * Memperbarui kategori yang sudah ada.
-     * @param id ID kategori yang akan diperbarui.
-     * @param request DTO dengan data kategori yang baru.
-     * @return Optional<CategoryResponse> DTO kategori yang diperbarui jika ditemukan.
-     * @throws RuntimeException jika kategori tidak ditemukan atau nama kategori duplikat.
-     */
     public Optional<CategoryResponse> updateCategory(UUID id, CategoryRequest request) {
         return categoryRepository.findById(id).map(existingCategory -> {
             // Cek duplikasi nama jika nama berubah dan sudah ada di kategori lain
@@ -85,11 +65,6 @@ public class CategoryService {
         });
     }
 
-    /**
-     * Menghapus kategori berdasarkan ID.
-     * @param id ID kategori yang akan dihapus.
-     * @return true jika berhasil dihapus, false jika kategori tidak ditemukan.
-     */
     public boolean deleteCategory(UUID id) {
         if (categoryRepository.existsById(id)) {
             categoryRepository.deleteById(id);
@@ -98,11 +73,6 @@ public class CategoryService {
         return false;
     }
 
-    /**
-     * Metode helper untuk mengkonversi entitas Category ke CategoryResponse DTO.
-     * @param category Entitas Category.
-     * @return CategoryResponse DTO.
-     */
     private CategoryResponse mapToCategoryResponse(Category category) {
         return CategoryResponse.builder()
                 .id(category.getId())
