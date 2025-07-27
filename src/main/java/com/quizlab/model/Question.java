@@ -22,7 +22,7 @@ public class Question {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String text;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_if", nullable = false)
     private Category category;
 
