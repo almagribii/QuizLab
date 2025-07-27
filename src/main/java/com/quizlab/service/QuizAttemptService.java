@@ -109,6 +109,18 @@ public class QuizAttemptService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<QuizAttemptResponse> getQuizAttemptsByUserIdAndCategoryId(UUID userId, UUID categoryId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan ID " + userId + " tidak ditemukan."));
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Kategori dengan ID " + categoryId + " tidak ditemukan."));
+
+        return quizAttemptRepository.findByUserAndCategory(user, category).stream()
+                .map(this::mapToQuizAttemptResponse)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Metode helper untuk mengkonversi entitas QuizAttempt ke QuizAttemptResponse DTO.
      * @param quizAttempt Entitas QuizAttempt.
