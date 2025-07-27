@@ -16,7 +16,7 @@ import java.util.concurrent.locks.LockSupport;
 @AllArgsConstructor
 public class QuizAttemptRequest {
     @NotNull(message = "ID Pengguna tidak boleh Kosong")
-    private UUID id;
+    private UUID UserId;
 
     @NotNull(message = "ID Kategori tidak boleh Kosong")
     private UUID categoryId;
@@ -27,7 +27,7 @@ public class QuizAttemptRequest {
 
     @NotNull(message = "Total pertanyaan tidak boleh kosong")
     @Min(value = 1, message = "Total pertanyaan minimal adalah 1")
-    private Integer totalQuestion;
+    private Integer totalQuestions;
 
     private DifficultyLevel difficultyLevel;
 

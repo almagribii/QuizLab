@@ -24,7 +24,7 @@ public class QuizAttemptResponse {
     private UUID categoryId;
     private String categoryName;
     private Integer score;
-    private Integer totalQuestion;
+    private Integer totalQuestions;
     private DifficultyLevel difficultyLevel;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

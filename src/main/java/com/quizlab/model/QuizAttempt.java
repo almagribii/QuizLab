@@ -30,7 +30,7 @@ public class QuizAttempt {
     private Integer score;
 
     @Column(name = "total_question", nullable = false)
-    private Integer totalQuestion;
+    private Integer totalQuestions;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty_level")
