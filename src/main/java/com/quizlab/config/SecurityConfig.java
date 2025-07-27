@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/v1/categories/**").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/v1/categories/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/api/v1/categories/**").permitAll()
+                        .requestMatchers("/api/v1/questions/**").permitAll()
                         // Mengizinkan akses ke Swagger UI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Untuk endpoint Health Check kita

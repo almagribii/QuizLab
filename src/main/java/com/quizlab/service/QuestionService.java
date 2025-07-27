@@ -40,7 +40,7 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public List<QuestionResponse> getAllQuestion() {
+    public List<QuestionResponse> getAllQuestions() {
         return questionRepository.findAll().stream()
                 .map(this::mapToQuestionResponse)
                 .collect(Collectors.toList());
