@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // Mengizinkan semua permintaan ke endpoint autentikasi tanpa otentikasi
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/categories").permitAll()
                         // Mengizinkan akses ke Swagger UI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Untuk endpoint Health Check kita
