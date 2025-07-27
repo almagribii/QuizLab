@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class QuizAttemptController {
 
-    private final QuizAttemptService quizAttemptService; // Injeksi QuizAttemptService
+    private final QuizAttemptService quizAttemptService;
 
     /**
      * Endpoint untuk mencatat percobaan kuis baru.
@@ -32,13 +32,11 @@ public class QuizAttemptController {
     public ResponseEntity<QuizAttemptResponse> createQuizAttempt(@Valid @RequestBody QuizAttemptRequest request) {
         try {
             QuizAttemptResponse newAttempt = quizAttemptService.createQuizAttempt(request);
-            return new ResponseEntity<>(newAttempt, HttpStatus.CREATED); // Status 201 Created
+            return new ResponseEntity<>(newAttempt, HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
-            // Jika userId atau categoryId tidak ditemukan
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); // Status 404 Not Found
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } catch (RuntimeException e) {
-            // Untuk error umum lainnya (misal validasi lebih lanjut)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); // Status 400 Bad Request
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -57,25 +55,24 @@ public class QuizAttemptController {
         List<QuizAttemptResponse> attempts;
 
         if (userId != null && categoryId != null) {
-            // Jika ada filter User DAN Category
-            attempts = quizAttemptService.getQuizAttemptsByUserIdAndCategoryId(userId, categoryId); // <-- Asumsi method ini ada di service
+            attempts = quizAttemptService.getQuizAttemptsByUserIdAndCategoryId(userId, categoryId);
         } else if (userId != null) {
             try {
                 attempts = quizAttemptService.getQuizAttemptsByUserId(userId);
             } catch (EntityNotFoundException e) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Pengguna tidak ditemukan
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } else if (categoryId != null) {
             try {
                 attempts = quizAttemptService.getQuizAttemptsByCategoryId(categoryId);
             } catch (EntityNotFoundException e) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Kategori tidak ditemukan
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } else {
-            attempts = quizAttemptService.getAllQuizAttempts(); // Ambil semua jika tanpa filter
+            attempts = quizAttemptService.getAllQuizAttempts();
         }
 
-        return new ResponseEntity<>(attempts, HttpStatus.OK); // Status 200 OK
+        return new ResponseEntity<>(attempts, HttpStatus.OK);
     }
 
     /**
