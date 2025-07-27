@@ -3,6 +3,7 @@ package com.quizlab.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity; // Import ini
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity; // Import ini
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer; // Import ini (untuk Spring Boot 3+)
@@ -29,6 +30,9 @@ public class SecurityConfig {
                         // Mengizinkan semua permintaan ke endpoint autentikasi tanpa otentikasi
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/categories").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/v1/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/categories/**").permitAll()
                         // Mengizinkan akses ke Swagger UI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Untuk endpoint Health Check kita
