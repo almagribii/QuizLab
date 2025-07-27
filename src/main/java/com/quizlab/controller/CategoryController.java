@@ -55,7 +55,7 @@ public class CategoryController {
         }
     }
 
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable UUID id){
         boolean deleted = categoryService.deleteCategory(id);
         if (deleted) {
