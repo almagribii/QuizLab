@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user_Youtubes")
-public class UserAnswerQuestion {
+public class UserQuestionAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
