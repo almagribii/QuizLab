@@ -21,19 +21,19 @@ public class QuizAttemptRequest {
     @NotNull(message = "ID Kategori tidak boleh Kosong")
     private UUID categoryId;
 
-    @NotNull(message = "Score tidak boleh kosong")
-    @Min(value = 0, message = "Skor minimal adalah 0")
-    private Integer score;
-
-    @NotNull(message = "Total pertanyaan tidak boleh kosong")
-    @Min(value = 1, message = "Total pertanyaan minimal adalah 1")
-    private Integer totalQuestions;
+//    @NotNull(message = "Score tidak boleh kosong")
+//    @Min(value = 0, message = "Skor minimal adalah 0")
+//    private Integer score;
+//
+//    @NotNull(message = "Total pertanyaan tidak boleh kosong")
+//    @Min(value = 1, message = "Total pertanyaan minimal adalah 1")
+//    private Integer totalQuestions;
 
     private DifficultyLevel difficultyLevel;
 
     @NotNull(message = "Waktu Mulai kuis tidak Boleh Kosong")
     private LocalDateTime startTime;
 
-    @NotNull(message = "Waktu Selesai Kuis Tidak Boleh Kosong")
-    private LocalDateTime endTime;
+//    @NotNull(message = "Waktu Selesai Kuis Tidak Boleh Kosong")
+//    private LocalDateTime endTime;
 }

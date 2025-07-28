@@ -26,11 +26,11 @@ public class QuizAttempt {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(nullable = false)
-    private Integer score;
+    @Column
+    private Integer score = 0;
 
-    @Column(name = "total_question", nullable = false)
-    private Integer totalQuestions;
+    @Column(name = "total_question")
+    private Integer totalQuestions = 0;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty_level")
@@ -42,8 +42,14 @@ public class QuizAttempt {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
-    @PrePersist
-    protected void onCreate(){
+    @PrePersist // Hanya untuk startTime yang wajib di awal
+    protected void onCreate() {
         this.startTime = LocalDateTime.now();
+        if (this.score == null) { // Pastikan nilai default jika tidak diset di service
+            this.score = 0;
+        }
+        if (this.totalQuestions == null) { // Pastikan nilai default jika tidak diset di service
+            this.totalQuestions = 0;
+        }
     }
 }
