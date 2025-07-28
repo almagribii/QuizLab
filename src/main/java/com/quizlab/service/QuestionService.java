@@ -78,8 +78,6 @@ public class QuestionService {
             existingQuestion.setCategory(category);
             existingQuestion.setDifficultyLevel(request.getDifficultyLevel());
             existingQuestion.setExplanation(request.getExplanation());
-            // isActive bisa diupdate melalui endpoint terpisah atau disertakan di request jika diinginkan
-            // existingQuestion.setActive(request.isActive());
 
             Question updatedQuestion = questionRepository.save(existingQuestion);
             return mapToQuestionResponse(updatedQuestion);

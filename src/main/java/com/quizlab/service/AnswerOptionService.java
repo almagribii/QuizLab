@@ -1,5 +1,4 @@
-// src/main/java/com/quizlab/service/AnswerOptionService.java
-package com.quizlab.service; // Pastikan ini sesuai dengan struktur paket Anda
+package com.quizlab.service;
 
 import com.quizlab.dto.AnswerOptionRequest;  // DTO input untuk pilihan jawaban
 import com.quizlab.dto.AnswerOptionResponse; // DTO output untuk pilihan jawaban
@@ -17,13 +16,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service // Menandakan bahwa kelas ini adalah komponen Service Spring.
-@RequiredArgsConstructor // Lombok: Membuat konstruktor untuk field final (Dependency Injection).
-@Transactional // Semua method publik di kelas ini akan berjalan dalam sebuah transaksi database.
+@Service
+@RequiredArgsConstructor
+@Transactional
 public class AnswerOptionService {
 
-    private final AnswerOptionRepository answerOptionRepository; // Injeksi AnswerOptionRepository
-    private final QuestionRepository questionRepository;         // Injeksi QuestionRepository (untuk validasi Question)
+    private final AnswerOptionRepository answerOptionRepository;
+    private final QuestionRepository questionRepository;
 
     /**
      * Membuat pilihan jawaban baru untuk sebuah pertanyaan.
@@ -32,21 +31,17 @@ public class AnswerOptionService {
      * @throws EntityNotFoundException jika pertanyaan (questionId) yang diacu tidak ditemukan.
      */
     public AnswerOptionResponse createAnswerOption(AnswerOptionRequest request) {
-        // 1. Validasi: Pastikan pertanyaan (Question) yang diacu ada
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new EntityNotFoundException("Pertanyaan dengan ID " + request.getQuestionId() + " tidak ditemukan."));
 
-        // 2. Buat objek AnswerOption dari DTO Request
         AnswerOption newAnswerOption = new AnswerOption();
         newAnswerOption.setText(request.getText());
         newAnswerOption.setQuestion(question); // Set objek Question yang sudah ditemukan
         newAnswerOption.setCorrect(request.getIsCorrect()); // Set apakah ini jawaban benar
         newAnswerOption.setDisplayOrder(request.getDisplayOrder()); // Set urutan tampilan
 
-        // 3. Simpan pilihan jawaban ke database
         AnswerOption savedAnswerOption = answerOptionRepository.save(newAnswerOption);
 
-        // 4. Konversi entitas AnswerOption yang disimpan ke DTO Response dan kembalikan
         return mapToAnswerOptionResponse(savedAnswerOption);
     }
 

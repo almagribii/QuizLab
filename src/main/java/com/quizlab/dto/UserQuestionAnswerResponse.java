@@ -1,8 +1,17 @@
 package com.quizlab.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.UUID;
 
-public class UserQuestionAnswerOption {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class UserQuestionAnswerResponse {
     private UUID id;
 
     private UUID quizAttemptId;

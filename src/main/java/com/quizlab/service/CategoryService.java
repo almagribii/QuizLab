@@ -50,7 +50,6 @@ public class CategoryService {
 
     public Optional<CategoryResponse> updateCategory(UUID id, CategoryRequest request) {
         return categoryRepository.findById(id).map(existingCategory -> {
-            // Cek duplikasi nama jika nama berubah dan sudah ada di kategori lain
             if (!existingCategory.getName().equals(request.getName())) {
                 if (categoryRepository.findByName(request.getName()).isPresent()) {
                     throw new RuntimeException("Nama kategori '" + request.getName() + "' sudah ada.");

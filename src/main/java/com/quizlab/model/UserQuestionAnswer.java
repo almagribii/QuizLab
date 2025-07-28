@@ -27,7 +27,7 @@ public class UserQuestionAnswer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "selected_answer_option_id", nullable = false)
-    private AnswerOption answerOption;
+    private AnswerOption selectedAnswerOption;
 
     @Column(name = "is_correct", nullable = false)
     private boolean isCorrect;

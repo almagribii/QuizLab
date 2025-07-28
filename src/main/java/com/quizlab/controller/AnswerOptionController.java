@@ -1,26 +1,25 @@
-// src/main/java/com/quizlab/controller/AnswerOptionController.java
-package com.quizlab.controller; // Pastikan ini sesuai dengan struktur paket Anda
+package com.quizlab.controller;
 
-import com.quizlab.dto.AnswerOptionRequest;   // DTO input untuk pilihan jawaban
-import com.quizlab.dto.AnswerOptionResponse;  // DTO output untuk pilihan jawaban
-import com.quizlab.service.AnswerOptionService; // Service layer yang akan kita panggil
-import jakarta.persistence.EntityNotFoundException; // Untuk menangani exception EntityNotFoundException
-import jakarta.validation.Valid;           // Untuk mengaktifkan validasi DTO
-import lombok.RequiredArgsConstructor;     // Lombok untuk Dependency Injection
-import org.springframework.http.HttpStatus; // Untuk kode status HTTP
-import org.springframework.http.ResponseEntity; // Untuk membangun respons HTTP
-import org.springframework.web.bind.annotation.*; // Anotasi untuk REST Controller
+import com.quizlab.dto.AnswerOptionRequest;
+import com.quizlab.dto.AnswerOptionResponse;
+import com.quizlab.service.AnswerOptionService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@RestController // Menandakan bahwa kelas ini adalah REST Controller
-@RequestMapping("/api/v1/answer-options") // Base path untuk semua endpoint pilihan jawaban
-@RequiredArgsConstructor // Lombok: Membuat konstruktor untuk AnswerOptionService
+@RestController
+@RequestMapping("/api/v1/answer-options")
+@RequiredArgsConstructor
 public class AnswerOptionController {
 
-    private final AnswerOptionService answerOptionService; // Injeksi AnswerOptionService
+    private final AnswerOptionService answerOptionService;
 
     /**
      * Endpoint untuk membuat pilihan jawaban baru untuk sebuah pertanyaan.
@@ -35,11 +34,9 @@ public class AnswerOptionController {
             AnswerOptionResponse newAnswerOption = answerOptionService.createAnswerOption(request);
             return new ResponseEntity<>(newAnswerOption, HttpStatus.CREATED); // Status 201 Created
         } catch (EntityNotFoundException e) {
-            // Jika questionId tidak ditemukan
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); // Status 404 Not Found (karena relasi ke pertanyaan)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } catch (RuntimeException e) {
-            // Untuk error umum lainnya (misal validasi lebih lanjut)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); // Status 400 Bad Request
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -51,20 +48,20 @@ public class AnswerOptionController {
      */
     @GetMapping
     public ResponseEntity<List<AnswerOptionResponse>> getAllAnswerOptions(
-            @RequestParam(required = false) UUID questionId) { // Parameter query opsional untuk filtering
+            @RequestParam(required = false) UUID questionId) {
         List<AnswerOptionResponse> answerOptions;
 
         if (questionId != null) {
             try {
                 answerOptions = answerOptionService.getAnswerOptionsByQuestionId(questionId);
             } catch (EntityNotFoundException e) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Pertanyaan tidak ditemukan
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } else {
-            answerOptions = answerOptionService.getAllAnswerOptions(); // Ambil semua jika tanpa filter
+            answerOptions = answerOptionService.getAllAnswerOptions();
         }
 
-        return new ResponseEntity<>(answerOptions, HttpStatus.OK); // Status 200 OK
+        return new ResponseEntity<>(answerOptions, HttpStatus.OK);
     }
 
     /**
@@ -77,8 +74,8 @@ public class AnswerOptionController {
     @GetMapping("/{id}")
     public ResponseEntity<AnswerOptionResponse> getAnswerOptionById(@PathVariable UUID id) {
         Optional<AnswerOptionResponse> answerOption = answerOptionService.getAnswerOptionById(id);
-        return answerOption.map(value -> new ResponseEntity<>(value, HttpStatus.OK)) // Jika ditemukan, return 200 OK
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); // Jika tidak ditemukan, return 404 Not Found
+        return answerOption.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -93,12 +90,12 @@ public class AnswerOptionController {
     public ResponseEntity<AnswerOptionResponse> updateAnswerOption(@PathVariable UUID id, @Valid @RequestBody AnswerOptionRequest request) {
         try {
             Optional<AnswerOptionResponse> updatedAnswerOption = answerOptionService.updateAnswerOption(id, request);
-            return updatedAnswerOption.map(value -> new ResponseEntity<>(value, HttpStatus.OK)) // Jika update sukses, return 200 OK
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); // Jika pilihan jawaban tidak ditemukan, return 404 Not Found
+            return updatedAnswerOption.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); // Jika pertanyaan induk tidak ditemukan
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); // Error umum (misal validasi)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -113,9 +110,9 @@ public class AnswerOptionController {
     public ResponseEntity<Void> deleteAnswerOption(@PathVariable UUID id) {
         boolean deleted = answerOptionService.deleteAnswerOption(id);
         if (deleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Status 204 No Content
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Status 404 Not Found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/questions/**").permitAll()
                         .requestMatchers("/api/v1/answer-options/**").permitAll()
                         .requestMatchers("/api/v1/quiz-attempts/**").permitAll()
+                        .requestMatchers("/api/v1/user-answers/**").permitAll()
                         // Mengizinkan akses ke Swagger UI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Untuk endpoint Health Check kita
